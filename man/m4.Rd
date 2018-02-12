@@ -15,8 +15,8 @@ m4(data, cutOff = 0.9)
 data.table
 }
 \description{
-flag values with false if they belong to a month were the correlation with
-median of all station is lower than cutOff. Steps can be skipped by renaming
+flag values with false if they belong to a month in which the correlation with
+median of all stations is lower than cutOff. Steps can be skipped by renaming
 columns in the input data.
 }
 \examples{

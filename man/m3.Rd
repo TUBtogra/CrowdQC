@@ -15,7 +15,7 @@ m3(data, cutOff = 0.2)
 data.table
 }
 \description{
-flag values with fales if more than cutOff percent values are removed during
+flag values with false if more than cutOff percent values are removed during
 m1. Steps can be skipped by renaming columns in the input data.
 }
 \examples{

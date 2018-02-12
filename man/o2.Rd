@@ -16,7 +16,7 @@ a day are flagged with false}
 data.table
 }
 \description{
-For consitency filter if lesse than 80 percent of values for a day are
+For consitency, filter if lesser than 80 percent of values for a day are
 present. Steps can be skipped by renaming columns in the input data.
 }
 \examples{

@@ -9,18 +9,18 @@ cor_month(x, y, m, cutOff)
 \arguments{
 \item{x}{values of unaggregated time series}
 
-\item{y}{data.table containing column medholding aggregated value and month
-holding the month the time series belong to}
+\item{y}{data.table containing column med holding aggregated value and month
+holding the month the time series belongs to}
 
 \item{m}{month to base the calculation on}
 
-\item{cutOff}{value below whitch False is returned}
+\item{cutOff}{value below which False is returned}
 }
 \value{
 True if correlation for the given month is higher than cutOff false otherwise
 }
 \description{
-calculates the correlation on montly basis vs. an data.set containing an
+calculates the correlation on monthly basis vs. an data.set containing an
 aggregated time series in the column "med". Both series need too have the
 same length and values at the same position are expected to belong to the
 same position in time.

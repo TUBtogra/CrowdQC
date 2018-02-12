@@ -5,7 +5,7 @@
 #'
 #' @param data data set formated as netatmoBer
 #' @param cutOff how much stations are allowed to have the same coordinates,
-#'   default is 1 meaning no p_id's with the same  lat lon values are allowed
+#'   default is 1 meaning no p_id's with the same lat lon values are allowed
 #'
 #' @return data.table
 #' @export
@@ -49,14 +49,14 @@ getZ <- function(x){
 
 #' perform filter step m2
 #'
-#' flages all values which robust z-score is not within of the critical values
+#' flags all values with robust z-score is not within the critical values
 #' obtained from low and high
-#' Steps can be skipped by renaming columns in the input data.
+#' Steps can be skipped by renaming columns in the input data
 #'
 #' @param data data.table object obtained from m1
 #' @param low value > 0
 #' @param high value < 1
-#' @param debug set to true too keep intermediate results
+#' @param debug set to true to keep intermediate results
 #'
 #' @return data.table
 #' @export
@@ -82,16 +82,16 @@ m2 <-function(data, low = 0.01, high = 0.95, debug = F){
 
 #' cor_month
 #'
-#' calculates the correlation on montly basis vs. an data.set containing an
+#' calculates the correlation on monthly basis vs. an data.set containing an
 #' aggregated time series in the column "med". Both series need too have the
 #' same length and values at the same position are expected to belong to the
 #' same position in time.
 #'
 #' @param x values of unaggregated time series
-#' @param y data.table containing column medholding aggregated value and month
-#'   holding the month the time series belong to
+#' @param y data.table containing column med holding aggregated value and month
+#'   holding the month the time series belongs to
 #' @param m month to base the calculation on
-#' @param cutOff value below whitch False is returned
+#' @param cutOff value below which False is returned
 #'
 #' @return True if correlation for the given month is higher than cutOff false otherwise
 #'
@@ -101,7 +101,7 @@ cor_month <- function(x, y, m, cutOff){
   if(length(x) != length(y[month == m,]$med)){
     stop("Dimensions are off, are you sure your data set contain an NaN value for each p_id at each missing time step?")
   }
-  c <- suppressWarnings(cor(x, y[month == m,]$med, use="pairwise.complete.obs")) #supress warning if no pairwise complete obs exist just return false
+  c <- suppressWarnings(cor(x, y[month == m,]$med, use="pairwise.complete.obs")) #supress warning if no pairwise complete obs exists just return false
   #maybe move out of loop ?
   if(is.na(c)){
     return(F) #treat na as no corrleation
@@ -114,7 +114,7 @@ cor_month <- function(x, y, m, cutOff){
 
 #' m3
 #'
-#' flag values with fales if more than cutOff percent values are removed during
+#' flag values with false if more than cutOff percent values are removed during
 #' m1. Steps can be skipped by renaming columns in the input data.
 #'
 #' @param data data.table object obained from m2
@@ -140,8 +140,8 @@ m3 <- function(data, cutOff = 0.2){
 
 #' m4
 #'
-#' flag values with false if they belong to a month were the correlation with
-#' median of all station is lower than cutOff. Steps can be skipped by renaming
+#' flag values with false if they belong to a month in which the correlation with
+#' median of all stations is lower than cutOff. Steps can be skipped by renaming
 #' columns in the input data.
 #'
 #' @param data data.table as returned by m3
@@ -200,12 +200,12 @@ interpol <- function(x, maxLength = 1){
 
 #' step o1 interpolate missing data
 #'
-#' In this step missing data is interpolated default is to perform linear
-#' interpolation on gap's of maximal 1h. Steps can be skipped by renaming
+#' In this step missing data is interpolated, default is to perform linear
+#' interpolation on gaps of maximal 1h. Steps can be skipped by renaming
 #' columns in the input data.
 #'
 #' @param data data.table as returned from m4
-#' @param fun  function to use fro interpolation default is interpol
+#' @param fun  function to use for interpolation default is interpol
 #' @param ...  additional parameters for interpolation function
 #'
 #' @return data.table
@@ -228,7 +228,7 @@ o1 <- function(data, fun = interpol, ...){
 
 #' filter step o2
 #'
-#' For consitency filter if lesse than 80 percent of values for a day are
+#' For consitency, filter if lesser than 80 percent of values for a day are
 #' present. Steps can be skipped by renaming columns in the input data.
 #'
 #' @param data data.table as returned from o1
@@ -254,11 +254,11 @@ o2 <- function(data, cutOff = 0.8){
 
 #' step o3
 #'
-#' For consitency filter if lesse than 80 percent of values for a day are
+#' For consitency, filter if lesser than 80 percent of values for a day are
 #' present. Steps can be skipped by renaming columns in the input data.
 #'
 #' @param data data.table as returned from o2
-#' @param cutOff percentage of values that ust be present before the month is flagged false
+#' @param cutOff percentage of values that must be present before the month is flagged false
 #'
 #' @return data.table
 #' @export
@@ -300,7 +300,7 @@ has_month <- function(data){
 #' @param o1_fun see fun in ?o1
 #' @param o2_cutOff see cutoff in ?o2
 #' @param o3_cutOff see cutoff in ?o3
-#' @param includeOptional if the steps o1 till o3 should be performed
+#' @param includeOptional if the steps o1 to o3 should be performed
 #' @param ... additional parameters used in o1 for details see ?o1
 #'
 #' @return data.table

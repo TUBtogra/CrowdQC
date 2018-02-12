@@ -9,7 +9,7 @@ o1(data, fun = interpol, ...)
 \arguments{
 \item{data}{data.table as returned from m4}
 
-\item{fun}{function to use fro interpolation default is interpol}
+\item{fun}{function to use for interpolation default is interpol}
 
 \item{...}{additional parameters for interpolation function}
 }
@@ -17,8 +17,8 @@ o1(data, fun = interpol, ...)
 data.table
 }
 \description{
-In this step missing data is interpolated default is to perform linear
-interpolation on gap's of maximal 1h. Steps can be skipped by renaming
+In this step missing data is interpolated, default is to perform linear
+interpolation on gaps of maximal 1h. Steps can be skipped by renaming
 columns in the input data.
 }
 \examples{

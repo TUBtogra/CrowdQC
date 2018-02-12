@@ -27,7 +27,7 @@ filterCWS(data, m1_cutOff = 1, m2_low = 0.1, m2_high = 0.95,
 
 \item{o3_cutOff}{see cutoff in ?o3}
 
-\item{includeOptional}{if the steps o1 till o3 should be performed}
+\item{includeOptional}{if the steps o1 to o3 should be performed}
 
 \item{...}{additional parameters used in o1 for details see ?o1}
 }

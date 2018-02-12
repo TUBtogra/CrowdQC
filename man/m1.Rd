@@ -10,7 +10,7 @@ m1(data, cutOff = 1)
 \item{data}{data set formated as netatmoBer}
 
 \item{cutOff}{how much stations are allowed to have the same coordinates,
-default is 1 meaning no p_id's with the same  lat lon values are allowed}
+default is 1 meaning no p_id's with the same lat lon values are allowed}
 }
 \value{
 data.table

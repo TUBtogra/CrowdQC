@@ -13,15 +13,15 @@ m2(data, low = 0.01, high = 0.95, debug = F)
 
 \item{high}{value < 1}
 
-\item{debug}{set to true too keep intermediate results}
+\item{debug}{set to true to keep intermediate results}
 }
 \value{
 data.table
 }
 \description{
-flages all values which robust z-score is not within of the critical values
+flags all values with robust z-score is not within the critical values
 obtained from low and high
-Steps can be skipped by renaming columns in the input data.
+Steps can be skipped by renaming columns in the input data
 }
 \examples{
 data(netatmoBer)
