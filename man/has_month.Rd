@@ -10,7 +10,7 @@ has_month(data)
 \item{data}{}
 }
 \value{
-true if data  contains a column month
+true if data contains a column month
 }
 \description{
 has_month

@@ -2,16 +2,16 @@
 % Please edit documentation in R/filter.R
 \name{m2}
 \alias{m2}
-\title{perform filter step m2}
+\title{Main filter step m2}
 \usage{
 m2(data, low = 0.01, high = 0.95, debug = F)
 }
 \arguments{
 \item{data}{data.table object obtained from m1}
 
-\item{low}{value > 0}
+\item{low}{0 < low < high < 1}
 
-\item{high}{value < 1}
+\item{high}{0 < low < high < 1}
 
 \item{debug}{set to true to keep intermediate results}
 }
@@ -19,9 +19,10 @@ m2(data, low = 0.01, high = 0.95, debug = F)
 data.table
 }
 \description{
-flags all values with robust z-score is not within the critical values
-obtained from low and high
-Steps can be skipped by renaming columns in the input data
+Flags all values as FALSE if robust z-score is not within the critical values
+obtained from low and high. This approach is based on the distribution
+function of all values. !Careful: if number of stations is < 200, it would be
+better to use the Student t distribution (to be implemented)!
 }
 \examples{
 data(netatmoBer)

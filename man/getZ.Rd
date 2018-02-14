@@ -2,16 +2,16 @@
 % Please edit documentation in R/filter.R
 \name{getZ}
 \alias{getZ}
-\title{calculate robust z-score}
+\title{Calculate robust z-score}
 \usage{
 getZ(x)
 }
 \arguments{
-\item{x}{vector to caluclate the robust score from}
+\item{x}{vector to calculate the robust z-score from}
 }
 \value{
-vector with z-Score for elements in x or NaN
+vector with z-score for elements in x or NaN
 }
 \description{
-calculate robust z-score
+Calculate robust z-score
 }

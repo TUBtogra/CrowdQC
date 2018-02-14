@@ -2,22 +2,22 @@
 % Please edit documentation in R/filter.R
 \name{m4}
 \alias{m4}
-\title{m4}
+\title{Main filter m4}
 \usage{
 m4(data, cutOff = 0.9)
 }
 \arguments{
 \item{data}{data.table as returned by m3}
 
-\item{cutOff}{}
+\item{cutOff}{value of correlation coefficient below which data are flagged
+with FALSE, 0 < cutOff < 1. Default is 0.9.}
 }
 \value{
 data.table
 }
 \description{
-flag values with false if they belong to a month in which the correlation with
-median of all stations is lower than cutOff. Steps can be skipped by renaming
-columns in the input data.
+Flag values with FALSE if they belong to a month in which the correlation
+with the median of all stations is lower than cutOff.
 }
 \examples{
 y <- m3(x)

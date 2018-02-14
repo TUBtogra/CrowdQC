@@ -2,22 +2,23 @@
 % Please edit documentation in R/filter.R
 \name{m1}
 \alias{m1}
-\title{perform filter step m1}
+\title{Main filter step m1}
 \usage{
 m1(data, cutOff = 1)
 }
 \arguments{
-\item{data}{data set formated as netatmoBer}
+\item{data}{data set formated as the sample data (netatmoBer)}
 
 \item{cutOff}{how much stations are allowed to have the same coordinates,
-default is 1 meaning no p_id's with the same lat lon values are allowed}
+default is 1. This means that if two p_ids share the same lat lon values,
+data at these stations are set to FALSE.}
 }
 \value{
 data.table
 }
 \description{
-flag values with false that are missing or belong to a p_id having lon lat values
-which appear more than cutOff
+Flag values with FALSE that are missing or belong to a p_id having lon lat
+values which occur more than the 'cutOff' value.
 }
 \examples{
 data(netatmoBer)

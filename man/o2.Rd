@@ -2,22 +2,24 @@
 % Please edit documentation in R/filter.R
 \name{o2}
 \alias{o2}
-\title{filter step o2}
+\title{Optional filter step o2}
 \usage{
 o2(data, cutOff = 0.8)
 }
 \arguments{
 \item{data}{data.table as returned from o1}
 
-\item{cutOff}{percentage of values that must be present before all values of
-a day are flagged with false}
+\item{cutOff}{percentage of values that must be present for each day before
+all values of that day are flagged with FALSE, expressed in fraction: 0 <
+cutOff < 1. Default is 0.8, i.e, 80 percent of data.}
 }
 \value{
 data.table
 }
 \description{
-For consitency, filter if lesser than 80 percent of values for a day are
-present. Steps can be skipped by renaming columns in the input data.
+Optional filter for temporal data availability. Flags all values in a
+calendar day as FALSE if less than 'cutOff' percent of valid values are
+available for that day.
 }
 \examples{
 o_2 <- o2(o_1)

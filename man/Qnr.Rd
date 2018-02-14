@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter.R
 \name{Qnr}
 \alias{Qnr}
-\title{Version of Qn respecting NaN values}
+\title{Version of the Qn function respecting NaN values}
 \usage{
 Qnr(x)
 }
@@ -10,8 +10,8 @@ Qnr(x)
 \item{x}{}
 }
 \value{
-NaN for no valid values otherwise Qn without NaN
+NaN for no valid values, otherwise robust scale estimator 'Qn' without NaN
 }
 \description{
-Version of Qn respecting NaN values
+Version of the Qn function respecting NaN values
 }

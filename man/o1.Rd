@@ -2,14 +2,14 @@
 % Please edit documentation in R/filter.R
 \name{o1}
 \alias{o1}
-\title{step o1 interpolate missing data}
+\title{Optional filter step o1}
 \usage{
 o1(data, fun = interpol, ...)
 }
 \arguments{
 \item{data}{data.table as returned from m4}
 
-\item{fun}{function to use for interpolation default is interpol}
+\item{fun}{function to use for interpolation, default is interpol}
 
 \item{...}{additional parameters for interpolation function}
 }
@@ -18,8 +18,7 @@ data.table
 }
 \description{
 In this step missing data is interpolated, default is to perform linear
-interpolation on gaps of maximal 1h. Steps can be skipped by renaming
-columns in the input data.
+interpolation on gaps of maximal length = 1.
 }
 \examples{
 #default

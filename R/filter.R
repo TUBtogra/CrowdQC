@@ -1,11 +1,12 @@
-#' perform filter step m1
+#' Main filter step m1
 #'
-#' flag values with false that are missing or belong to a p_id having lon lat values
-#' which appear more than cutOff
+#' Flag values with FALSE that are missing or belong to a p_id having lon lat
+#' values which occur more than the 'cutOff' value.
 #'
-#' @param data data set formated as netatmoBer
+#' @param data data set formated as the sample data (netatmoBer)
 #' @param cutOff how much stations are allowed to have the same coordinates,
-#'   default is 1 meaning no p_id's with the same lat lon values are allowed
+#'   default is 1. This means that if two p_ids share the same lat lon values,
+#'   data at these stations are set to FALSE.
 #'
 #' @return data.table
 #' @export
@@ -16,28 +17,28 @@
 m1 <- function(data, cutOff = 1){
   val  <- data[!is.na(ta),.(a = 1), by = .(p_id,lon,lat)]
   bad_s  <- val[,.(anz = sum(lon == val$lon & lat == val$lat)), by = p_id]
-  bad_s  <- bad_s[anz > 1,]$p_id
+  bad_s  <- bad_s[anz > cutOff,]$p_id
   data[,m1:= T]
   data[p_id %in% bad_s,"m1"] <- F
   data[is.na(ta),"m1"] <- F
   return(data)
 }
 
-#' Version of Qn respecting NaN values
+#' Version of the Qn function respecting NaN values
 #'
 #' @param x
 #'
-#' @return NaN for no valid values otherwise Qn without NaN
+#' @return NaN for no valid values, otherwise robust scale estimator 'Qn' without NaN
 Qnr <- function(x){
   x <- x[!is.na(x)]
   return(robustbase::Qn(x))
 }
 
-#' calculate robust z-score
+#' Calculate robust z-score
 #'
-#' @param x vector to caluclate the robust score from
+#' @param x vector to calculate the robust z-score from
 #'
-#' @return vector with z-Score for elements in x or NaN
+#' @return vector with z-score for elements in x or NaN
 getZ <- function(x){
   q <- Qnr(x)
   if(is.na(q)){
@@ -47,15 +48,16 @@ getZ <- function(x){
   return(res)
 }
 
-#' perform filter step m2
+#' Main filter step m2
 #'
-#' flags all values with robust z-score is not within the critical values
-#' obtained from low and high
-#' Steps can be skipped by renaming columns in the input data
+#' Flags all values as FALSE if robust z-score is not within the critical values
+#' obtained from low and high. This approach is based on the distribution
+#' function of all values. !Careful: if number of stations is < 200, it would be
+#' better to use the Student t distribution (to be implemented)!
 #'
 #' @param data data.table object obtained from m1
-#' @param low value > 0
-#' @param high value < 1
+#' @param low 0 < low < high < 1
+#' @param high 0 < low < high < 1
 #' @param debug set to true to keep intermediate results
 #'
 #' @return data.table
@@ -80,20 +82,21 @@ m2 <-function(data, low = 0.01, high = 0.95, debug = F){
   return(data)
 }
 
-#' cor_month
+#' Monthly correlation of individual CWS with median
 #'
-#' calculates the correlation on monthly basis vs. an data.set containing an
-#' aggregated time series in the column "med". Both series need too have the
-#' same length and values at the same position are expected to belong to the
-#' same position in time.
+#' Calculates the correlation of each CWS vs. a data.set containing an
+#' aggregated time series in the column 'med' per month. Both series need to
+#' have the same length and values at the same position are expected to belong
+#' to the same position in time. Function is called internally by filter m4.
 #'
 #' @param x values of unaggregated time series
-#' @param y data.table containing column med holding aggregated value and month
-#'   holding the month the time series belongs to
+#' @param y data.table containing column 'med' holding aggregated values and
+#'   month holding the month the time series belongs to
 #' @param m month to base the calculation on
-#' @param cutOff value below which False is returned
+#' @param cutOff value below which FALSE is returned.
 #'
-#' @return True if correlation for the given month is higher than cutOff false otherwise
+#' @return TRUE if correlation for the given month is higher than cutOff, FALSE
+#'   otherwise
 #'
 #' @examples
 #' see m4
@@ -112,13 +115,15 @@ cor_month <- function(x, y, m, cutOff){
   return(T)
 }
 
-#' m3
+#' Main filter step m3
 #'
-#' flag values with false if more than cutOff percent values are removed during
-#' m1. Steps can be skipped by renaming columns in the input data.
+#' Flag values with FALSE if more than cutOff percent values are removed during
+#' m2 per month. This is done since it is assumed that if too many individual
+#' values are flagged FALSE in m2, the station is too suspicious to be kept.
 #'
 #' @param data data.table object obained from m2
-#' @param cutOff
+#' @param cutOff value above which data are flagged with FALSE, 0 < cutOff < 1.
+#'   Default is 0.2, i.e., 20 percent of data.
 #'
 #' @return data.table
 #' @export
@@ -138,14 +143,14 @@ m3 <- function(data, cutOff = 0.2){
   return(data)
 }
 
-#' m4
+#' Main filter m4
 #'
-#' flag values with false if they belong to a month in which the correlation with
-#' median of all stations is lower than cutOff. Steps can be skipped by renaming
-#' columns in the input data.
+#' Flag values with FALSE if they belong to a month in which the correlation
+#' with the median of all stations is lower than cutOff.
 #'
 #' @param data data.table as returned by m3
-#' @param cutOff
+#' @param cutOff value of correlation coefficient below which data are flagged
+#'   with FALSE, 0 < cutOff < 1. Default is 0.9.
 #'
 #' @return data.table
 #' @export
@@ -172,13 +177,15 @@ m4 <- function(data, cutOff = 0.9){
   return(data)
 }
 
-#' interpol
+#' Interpolation
 #'
-#' This function takes a numerical vector x and fills NaN's with linear
-#' interpolated values. But only if the NaN gap is smaller or equal maxLength
+#' This function takes a numerical vector x and fills NaNs with linearly
+#' interpolated values. The allowed length of the gap, i.e., the number of
+#' consecutive NaNs to be interpolated and replaces is smaller or equal
+#' maxLength. Internally called by o1.
 #'
 #' @param x a numeric vector
-#' @param maxLength How long a gap can be before it remains
+#' @param maxLength allowed length of the gap to interpolate, default is 1.
 #'
 #' @return vector
 #' @export
@@ -198,14 +205,13 @@ interpol <- function(x, maxLength = 1){
   return(x)
 }
 
-#' step o1 interpolate missing data
+#' Optional filter step o1
 #'
 #' In this step missing data is interpolated, default is to perform linear
-#' interpolation on gaps of maximal 1h. Steps can be skipped by renaming
-#' columns in the input data.
+#' interpolation on gaps of maximal length = 1.
 #'
 #' @param data data.table as returned from m4
-#' @param fun  function to use for interpolation default is interpol
+#' @param fun  function to use for interpolation, default is interpol
 #' @param ...  additional parameters for interpolation function
 #'
 #' @return data.table
@@ -226,14 +232,16 @@ o1 <- function(data, fun = interpol, ...){
   return(data)
 }
 
-#' filter step o2
+#' Optional filter step o2
 #'
-#' For consitency, filter if lesser than 80 percent of values for a day are
-#' present. Steps can be skipped by renaming columns in the input data.
+#' Optional filter for temporal data availability. Flags all values in a
+#' calendar day as FALSE if less than 'cutOff' percent of valid values are
+#' available for that day.
 #'
 #' @param data data.table as returned from o1
-#' @param cutOff percentage of values that must be present before all values of
-#'   a day are flagged with false
+#' @param cutOff percentage of values that must be present for each day before
+#'   all values of that day are flagged with FALSE, expressed in fraction: 0 <
+#'   cutOff < 1. Default is 0.8, i.e, 80 percent of data.
 #'
 #' @return data.table
 #' @export
@@ -252,13 +260,16 @@ o2 <- function(data, cutOff = 0.8){
   return(data)
 }
 
-#' step o3
+#' Optional filter step o3
 #'
-#' For consitency, filter if lesser than 80 percent of values for a day are
-#' present. Steps can be skipped by renaming columns in the input data.
+#' Optional filter for temporal data availability. Flags all values in a month
+#' as FALSE if less than 'cutOff' percent of valid values are available for that
+#' month.
 #'
 #' @param data data.table as returned from o2
-#' @param cutOff percentage of values that must be present before the month is flagged false
+#' @param cutOff percentage of values that must be present for each month before
+#'   all values of that month are flagged with FALSE, expressed in fraction: 0 <
+#'   cutOff < 1. Default is 0.8, i.e, 80 percent of data.
 #'
 #' @return data.table
 #' @export
@@ -281,27 +292,39 @@ o3 <- function(data, cutOff = 0.8){
 #'
 #' @param data
 #'
-#' @return true if data  contains a column month
+#' @return true if data contains a column month
 has_month <- function(data){
   return( "month" %in% colnames(data))
 }
 
 
-#' filter cws data
+#' Complete quality control (QC) of CWS data
 #'
-#' performs all filter steps.
+#' Performs all QC/filter steps in consecutive order. All settings are according
+#' to Napoly et al. (2018). This is the default function to carry out the
+#' complete QC procedure. Each filter step takes the result of the previous
+#' filter step as input. Thus, e.g., when applying filter step m2, the column
+#' 'm1' must be in the input data, for filter step m3 the column 'm2' must be
+#' present, etc. Each individual step could be skipped by renaming the columns
+#' in the input data. After each filter step a new column of type BYTE is
+#' included in the output, containing TRUE or FALSE flags. Flags of the previous
+#' levels are carried along, i.e., if a value failed in step m2, this FALSE is
+#' kept throughout the remianing filter steps. In the end, only those data
+#' values containing TRUE after the all filter steps are valid according to this
+#' QC.
 #'
-#' @param data input data in a format like data(netatmoBer)
-#' @param m1_cutOff see cutoff in ?m1
+#' @param data input data in the format as the example data (netatmoBer)
+#' @param m1_cutOff see cutOff in ?m1
 #' @param m2_low see low in ?m2
 #' @param m2_high see high in ?m2
-#' @param m3_cutOff see cutoff in ?m3
-#' @param m4_cutOff see cutoff in ?m4
+#' @param m3_cutOff see cutOff in ?m3
+#' @param m4_cutOff see cutOff in ?m4
 #' @param o1_fun see fun in ?o1
-#' @param o2_cutOff see cutoff in ?o2
-#' @param o3_cutOff see cutoff in ?o3
-#' @param includeOptional if the steps o1 to o3 should be performed
-#' @param ... additional parameters used in o1 for details see ?o1
+#' @param o2_cutOff see cutOff in ?o2
+#' @param o3_cutOff see cutOff in ?o3
+#' @param includeOptional set to TRUE if the filter steps o1 to o3 shall be
+#'   performed, default: TRUE
+#' @param ... additional parameters used in o1. For details see ?o1
 #'
 #' @return data.table
 #' @export

@@ -2,21 +2,23 @@
 % Please edit documentation in R/filter.R
 \name{m3}
 \alias{m3}
-\title{m3}
+\title{Main filter step m3}
 \usage{
 m3(data, cutOff = 0.2)
 }
 \arguments{
 \item{data}{data.table object obained from m2}
 
-\item{cutOff}{}
+\item{cutOff}{value above which data are flagged with FALSE, 0 < cutOff < 1.
+Default is 0.2, i.e., 20 percent of data.}
 }
 \value{
 data.table
 }
 \description{
-flag values with false if more than cutOff percent values are removed during
-m1. Steps can be skipped by renaming columns in the input data.
+Flag values with FALSE if more than cutOff percent values are removed during
+m2 per month. This is done since it is assumed that if too many individual
+values are flagged FALSE in m2, the station is too suspicious to be kept.
 }
 \examples{
 y <- m2(x)

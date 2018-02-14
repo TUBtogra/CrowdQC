@@ -2,28 +2,29 @@
 % Please edit documentation in R/filter.R
 \name{cor_month}
 \alias{cor_month}
-\title{cor_month}
+\title{Monthly correlation of individual CWS with median}
 \usage{
 cor_month(x, y, m, cutOff)
 }
 \arguments{
 \item{x}{values of unaggregated time series}
 
-\item{y}{data.table containing column med holding aggregated value and month
-holding the month the time series belongs to}
+\item{y}{data.table containing column 'med' holding aggregated values and
+month holding the month the time series belongs to}
 
 \item{m}{month to base the calculation on}
 
-\item{cutOff}{value below which False is returned}
+\item{cutOff}{value below which FALSE is returned.}
 }
 \value{
-True if correlation for the given month is higher than cutOff false otherwise
+TRUE if correlation for the given month is higher than cutOff, FALSE
+  otherwise
 }
 \description{
-calculates the correlation on monthly basis vs. an data.set containing an
-aggregated time series in the column "med". Both series need too have the
-same length and values at the same position are expected to belong to the
-same position in time.
+Calculates the correlation of each CWS vs. a data.set containing an
+aggregated time series in the column 'med' per month. Both series need to
+have the same length and values at the same position are expected to belong
+to the same position in time. Function is called internally by filter m4.
 }
 \examples{
 see m4

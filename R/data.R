@@ -1,16 +1,15 @@
-#' Example netatmo Data
+#' Example Netatmo data
 #'
-#' A dataset containing example netatmo Data. The data was obtained by hourly
-#' issueing the getpublicdata function of the netatmo php api. The requested
-#' rectangle was lon ne 13.647242, lat ne 52.727861 and lon sw 12.960249, lat sw
-#' 52.340471, split into 64 evenly spaced tiles.
-#' Missing values are set to NaN
+#' A dataset containing example Netatmo air temperature data from the months
+#' January and June 2017 in Berlin, Germany, and surroundings. The data were
+#' obtained by hourly issueing the 'getpublicdata' function of the Netatmo php
+#' application programming interface (API). The requested rectangle was lon NE
+#' 13.647242, lat NE 52.727861, and lon SW 12.960249, lat SW 52.340471, split
+#' into 64 evenly spaced tiles. Missing values are set to NaN.
 #'
 #' @format A data frame with 1885807 rows and 5 variables: \describe{
-#'   \item{time}{hour were the value belongs to}
-#'   \item{p_id}{an unique identifier for each netatmo station, changes on station replacement}
-#'   \item{ta}{air temperature in degree C}
-#'   \item{lon}{longitude}
-#'   \item{lat}{latitude}
-#' }
+#'   \item{time}{hour were the value belongs to, in UTC} \item{p_id}{a unique
+#'   identifier for each Netatmo station, changes if a station is relocated be
+#'   the owner} \item{ta}{air temperature in degree C} \item{lon}{longitude}
+#'   \item{lat}{latitude} }
 "netatmoBer"
