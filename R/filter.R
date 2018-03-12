@@ -58,6 +58,10 @@ getZ <- function(x){
 #' @param data data.table object obtained from m1
 #' @param low 0 < low < high < 1
 #' @param high 0 < low < high < 1
+#' @param heightCorrection if set to true (default) and the column "z" exists in
+#'   the input data, the temperatures used in calculating the the z-score are
+#'   corrected. The applied formular is t_cor = t - ((0.0065 * (z - mz)) where
+#'   mz is the spatial mean at each time step
 #' @param debug set to true to keep intermediate results
 #'
 #' @return data.table
@@ -68,16 +72,22 @@ getZ <- function(x){
 #' x <- m1(netatmoBer)
 #' y <- m2(x)
 #'
-m2 <-function(data, low = 0.01, high = 0.95, debug = F){
+m2 <-function(data, low = 0.01, high = 0.95, heightCorrection = T, debug = F){
   data[,rem_ta := ta]
   # ensures that all what is wrong in m1 is wrong in m2 too
   data[!m1, "rem_ta"] <- NaN
+  if(heightCorrection & "z" %in% colnames(data)){
+    agg <- data[,.(mz = mean(z, na.rm = T), by=time)]
+    data <- merge(data,agg)
+    data[, rem_ta := rem_ta - (0.0065 * (z - mz))]
+  }
   data[, z_ta := getZ(rem_ta), by = time]
   data[, m2 := T]
   data[z_ta < qnorm(low) | z_ta > qnorm(high) | is.nan(z_ta), "m2"] <- F
   if(!debug){
     data$rem_ta <- NULL
     data$z_ta <- NULL
+    data$mz <- NULL
   }
   return(data)
 }

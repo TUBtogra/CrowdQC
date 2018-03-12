@@ -4,7 +4,7 @@
 \alias{m2}
 \title{Main filter step m2}
 \usage{
-m2(data, low = 0.01, high = 0.95, debug = F)
+m2(data, low = 0.01, high = 0.95, heightCorrection = T, debug = F)
 }
 \arguments{
 \item{data}{data.table object obtained from m1}
@@ -12,6 +12,11 @@ m2(data, low = 0.01, high = 0.95, debug = F)
 \item{low}{0 < low < high < 1}
 
 \item{high}{0 < low < high < 1}
+
+\item{heightCorrection}{if set to true (default) and the column "z" exists in
+the input data, the temperatures used in calculating the the z-score are
+corrected. The applied formular is t_cor = t - ((0.0065 * (z - mz)) where
+mz is the spatial mean at each time step}
 
 \item{debug}{set to true to keep intermediate results}
 }
