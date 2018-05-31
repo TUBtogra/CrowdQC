@@ -1,4 +1,4 @@
-#' Main filter step m1
+#' Main QC step m1
 #'
 #' Flag values with FALSE that are missing or belong to a p_id having lon lat
 #' values which occur more than the 'cutOff' value.
@@ -48,7 +48,7 @@ getZ <- function(x){
   return(res)
 }
 
-#' Main filter step m2
+#' Main QC step m2
 #'
 #' Flags all values as FALSE if robust z-score is not within the critical values
 #' obtained from low and high. This approach is based on the distribution
@@ -77,8 +77,8 @@ m2 <-function(data, low = 0.01, high = 0.95, heightCorrection = T, debug = F){
   # ensures that all what is wrong in m1 is wrong in m2 too
   data[!m1, "rem_ta"] <- NaN
   if(heightCorrection & "z" %in% colnames(data)){
-    agg <- data[,.(mz = mean(z, na.rm = T), by=time)]
-    data <- merge(data,agg)
+    agg <- data[,.(mz = mean(z, na.rm = T)), by=.(time)]
+    data <- merge(data,agg, by = "time")
     data[, rem_ta := rem_ta - (0.0065 * (z - mz))]
   }
   data[, z_ta := getZ(rem_ta), by = time]
@@ -87,7 +87,9 @@ m2 <-function(data, low = 0.01, high = 0.95, heightCorrection = T, debug = F){
   if(!debug){
     data$rem_ta <- NULL
     data$z_ta <- NULL
-    data$mz <- NULL
+    if(heightCorrection & "z" %in% colnames(data)){
+      data$mz <- NULL
+    }
   }
   return(data)
 }
@@ -97,7 +99,7 @@ m2 <-function(data, low = 0.01, high = 0.95, heightCorrection = T, debug = F){
 #' Calculates the correlation of each CWS vs. a data.set containing an
 #' aggregated time series in the column 'med' per month. Both series need to
 #' have the same length and values at the same position are expected to belong
-#' to the same position in time. Function is called internally by filter m4.
+#' to the same position in time. Function is called internally by QC m4.
 #'
 #' @param x values of unaggregated time series
 #' @param y data.table containing column 'med' holding aggregated values and
@@ -115,7 +117,6 @@ cor_month <- function(x, y, m, cutOff){
     stop("Dimensions are off, are you sure your data set contain an NaN value for each p_id at each missing time step?")
   }
   c <- suppressWarnings(cor(x, y[month == m,]$med, use="pairwise.complete.obs")) #supress warning if no pairwise complete obs exists just return false
-  #maybe move out of loop ?
   if(is.na(c)){
     return(F) #treat na as no corrleation
   }
@@ -125,7 +126,7 @@ cor_month <- function(x, y, m, cutOff){
   return(T)
 }
 
-#' Main filter step m3
+#' Main QC step m3
 #'
 #' Flag values with FALSE if more than cutOff percent values are removed during
 #' m2 per month. This is done since it is assumed that if too many individual
@@ -153,7 +154,7 @@ m3 <- function(data, cutOff = 0.2){
   return(data)
 }
 
-#' Main filter m4
+#' Main QC m4
 #'
 #' Flag values with FALSE if they belong to a month in which the correlation
 #' with the median of all stations is lower than cutOff.
@@ -215,7 +216,7 @@ interpol <- function(x, maxLength = 1){
   return(x)
 }
 
-#' Optional filter step o1
+#' Optional QC step o1
 #'
 #' In this step missing data is interpolated, default is to perform linear
 #' interpolation on gaps of maximal length = 1.
@@ -242,9 +243,9 @@ o1 <- function(data, fun = interpol, ...){
   return(data)
 }
 
-#' Optional filter step o2
+#' Optional QC step o2
 #'
-#' Optional filter for temporal data availability. Flags all values in a
+#' Optional QC for temporal data availability. Flags all values in a
 #' calendar day as FALSE if less than 'cutOff' percent of valid values are
 #' available for that day.
 #'
@@ -263,16 +264,16 @@ o2 <- function(data, cutOff = 0.8){
   if(!has_d){
     data[, day := lubridate::floor_date(time,"day")]
   }
-  data[, o2 := o1 & sum(o1)/.N < cutOff, by = .(day, p_id)]
+  data[, o2 := o1 & sum(o1)/.N > cutOff, by = .(day, p_id)]
   if(!has_d){
     data$day <- NULL
   }
   return(data)
 }
 
-#' Optional filter step o3
+#' Optional QC step o3
 #'
-#' Optional filter for temporal data availability. Flags all values in a month
+#' Optional QC for temporal data availability. Flags all values in a month
 #' as FALSE if less than 'cutOff' percent of valid values are available for that
 #' month.
 #'
@@ -291,7 +292,7 @@ o3 <- function(data, cutOff = 0.8){
   if(!has_m){
     data[, month := lubridate::floor_date(time,"month")]
   }
-  data[, o3 := o2 & sum(o2)/.N < cutOff, by = .(month, p_id)]
+  data[, o3 := o2 & sum(o2)/.N > cutOff, by = .(month, p_id)]
   if(!has_m){
     data$month <- NULL
   }
@@ -310,17 +311,17 @@ has_month <- function(data){
 
 #' Complete quality control (QC) of CWS data
 #'
-#' Performs all QC/filter steps in consecutive order. All settings are according
+#' Performs all QC steps in consecutive order. All settings are according
 #' to Napoly et al. (2018). This is the default function to carry out the
-#' complete QC procedure. Each filter step takes the result of the previous
-#' filter step as input. Thus, e.g., when applying filter step m2, the column
-#' 'm1' must be in the input data, for filter step m3 the column 'm2' must be
+#' complete QC procedure. Each QC step takes the result of the previous
+#' QC step as input. Thus, e.g., when applying QC step m2, the column
+#' 'm1' must be in the input data, for QC step m3 the column 'm2' must be
 #' present, etc. Each individual step could be skipped by renaming the columns
-#' in the input data. After each filter step a new column of type BYTE is
+#' in the input data. After each QC step a new column of type BYTE is
 #' included in the output, containing TRUE or FALSE flags. Flags of the previous
 #' levels are carried along, i.e., if a value failed in step m2, this FALSE is
-#' kept throughout the remianing filter steps. In the end, only those data
-#' values containing TRUE after the all filter steps are valid according to this
+#' kept throughout the remianing QC steps. In the end, only those data
+#' values containing TRUE after the all QC steps are valid according to this
 #' QC.
 #'
 #' @param data input data in the format as the example data (netatmoBer)
@@ -332,7 +333,7 @@ has_month <- function(data){
 #' @param o1_fun see fun in ?o1
 #' @param o2_cutOff see cutOff in ?o2
 #' @param o3_cutOff see cutOff in ?o3
-#' @param includeOptional set to TRUE if the filter steps o1 to o3 shall be
+#' @param includeOptional set to TRUE if QC steps o1 to o3 shall be
 #'   performed, default: TRUE
 #' @param ... additional parameters used in o1. For details see ?o1
 #'
@@ -341,8 +342,8 @@ has_month <- function(data){
 #'
 #' @examples
 #' data(netatmoBer)
-#' y <- filterCWS(netatmoBer)
-filterCWS <- function(data,
+#' y <- qcCWS(netatmoBer)
+qcCWS <- function(data,
                    m1_cutOff = 1,
                    m2_low = 0.1, m2_high = 0.95,
                    m3_cutOff = 0.2,
