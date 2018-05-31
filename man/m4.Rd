@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter.R
 \name{m4}
 \alias{m4}
-\title{Main filter m4}
+\title{Main QC m4}
 \usage{
 m4(data, cutOff = 0.9)
 }

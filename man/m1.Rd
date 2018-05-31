@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter.R
 \name{m1}
 \alias{m1}
-\title{Main filter step m1}
+\title{Main QC step m1}
 \usage{
 m1(data, cutOff = 1)
 }

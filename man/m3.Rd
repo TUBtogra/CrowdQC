@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter.R
 \name{m3}
 \alias{m3}
-\title{Main filter step m3}
+\title{Main QC step m3}
 \usage{
 m3(data, cutOff = 0.2)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter.R
 \name{m2}
 \alias{m2}
-\title{Main filter step m2}
+\title{Main QC step m2}
 \usage{
 m2(data, low = 0.01, high = 0.95, heightCorrection = T, debug = F)
 }

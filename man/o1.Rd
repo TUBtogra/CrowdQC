@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter.R
 \name{o1}
 \alias{o1}
-\title{Optional filter step o1}
+\title{Optional QC step o1}
 \usage{
 o1(data, fun = interpol, ...)
 }

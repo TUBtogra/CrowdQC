@@ -24,7 +24,7 @@ TRUE if correlation for the given month is higher than cutOff, FALSE
 Calculates the correlation of each CWS vs. a data.set containing an
 aggregated time series in the column 'med' per month. Both series need to
 have the same length and values at the same position are expected to belong
-to the same position in time. Function is called internally by filter m4.
+to the same position in time. Function is called internally by QC m4.
 }
 \examples{
 see m4

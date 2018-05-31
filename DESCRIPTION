@@ -1,11 +1,11 @@
 Package: CrowdQC
 Type: Package
 Title: Quality control for crowdsourced data from CWS
-Version: 0.1.0
+Version: 1.1.0
 Author: Tom Grassmann, Adrien Napoly, Daniel Fenner, Fred Meier
 Maintainer: Tom Grassmann <grassmann@tu-berlin.de>
 Description: This package performs a quality control (QC) and filters suspicious data from citizen weather stations (CWS). It was designed for hourly air temperature data from Netatmo stations but should work with any normally-distributed data.
-License: What license is it under?
+License: GNU GPLv3 
 Citation: Napoly, A., T. Grassmann, F. Meier, D. Fenner (year): Title, Journal, Number, DOI: xxxxxx
 Encoding: UTF-8
 LazyData: true

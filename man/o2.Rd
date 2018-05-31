@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter.R
 \name{o2}
 \alias{o2}
-\title{Optional filter step o2}
+\title{Optional QC step o2}
 \usage{
 o2(data, cutOff = 0.8)
 }
@@ -17,7 +17,7 @@ cutOff < 1. Default is 0.8, i.e, 80 percent of data.}
 data.table
 }
 \description{
-Optional filter for temporal data availability. Flags all values in a
+Optional QC for temporal data availability. Flags all values in a
 calendar day as FALSE if less than 'cutOff' percent of valid values are
 available for that day.
 }
