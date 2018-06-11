@@ -79,7 +79,7 @@ m2 <-function(data, low = 0.01, high = 0.95, heightCorrection = T, debug = F){
   if(heightCorrection & "z" %in% colnames(data)){
     agg <- data[,.(mz = mean(z, na.rm = T)), by=.(time)]
     data <- merge(data,agg, by = "time")
-    data[, rem_ta := rem_ta - (0.0065 * (z - mz))]
+    data[, rem_ta := rem_ta + (0.0065 * (z - mz))]
   }
   data[, z_ta := getZ(rem_ta), by = time]
   data[, m2 := T]
