@@ -220,6 +220,8 @@ interpol <- function(x, maxLength = 1){
 #'
 #' In this step missing data is interpolated, default is to perform linear
 #' interpolation on gaps of maximal length = 1.
+#' A new column named "ta_int" is added to the data.table, containing the
+#' filtered data at level m4 with the interpolated data.
 #'
 #' @param data data.table as returned from m4
 #' @param fun  function to use for interpolation, default is interpol
@@ -238,8 +240,6 @@ o1 <- function(data, fun = interpol, ...){
   data[!m4, "ta_int"] <- NA
   data[,ta_int := fun(ta_int, ...), by = .(p_id)]
   data[, o1:= (is.na(ta) & !is.na(ta_int)) | m4] #has been interpolated or not
-  data[, ta := ta_int]
-  data$ta_int <- NULL
   return(data)
 }
 

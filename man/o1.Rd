@@ -19,6 +19,8 @@ data.table
 \description{
 In this step missing data is interpolated, default is to perform linear
 interpolation on gaps of maximal length = 1.
+A new column named "ta_int" is added to the data.table, containing the
+filtered data at level m4 with the interpolated data.
 }
 \examples{
 #default
