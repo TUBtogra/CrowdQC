@@ -154,7 +154,7 @@ m3 <- function(data, cutOff = 0.2){
   return(data)
 }
 
-#' Main QC m4
+#' Main QC step m4
 #'
 #' Flag values with FALSE if they belong to a month in which the correlation
 #' with the median of all stations is lower than cutOff.
