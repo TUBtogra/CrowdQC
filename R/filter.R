@@ -1,11 +1,11 @@
 #' Main QC step m1
 #'
-#' Flag values with FALSE that are missing or belong to a p_id having lon lat
-#' values which occur more than the 'cutOff' value.
+#' Flag values with FALSE that are missing or belong to a p_id having lon & lat
+#' values which occur more often than the 'cutOff' value.
 #'
-#' @param data data set formated as the sample data (netatmoBer)
+#' @param data data set (a data.table object) formated the same way as the sample data (netatmoBer)
 #' @param cutOff how much stations are allowed to have the same coordinates,
-#'   default is 1. This means that if two p_ids share the same lat lon values,
+#'   default is 1. This means that if two p_ids share the same lon & lat values,
 #'   data at these stations are set to FALSE.
 #'
 #' @return data.table
@@ -60,7 +60,7 @@ getZ <- function(x){
 #' @param high 0 < low < high < 1
 #' @param heightCorrection if set to true (default) and the column "z" exists in
 #'   the input data, the temperatures used in calculating the the z-score are
-#'   corrected. The applied formular is t_cor = t - ((0.0065 * (z - mz)) where
+#'   corrected. The applied formula is t_cor = t + ((0.0065 * (z - mz)) where
 #'   mz is the spatial mean at each time step
 #' @param debug set to true to keep intermediate results
 #'
@@ -132,7 +132,7 @@ cor_month <- function(x, y, m, cutOff){
 #' m2 per month. This is done since it is assumed that if too many individual
 #' values are flagged FALSE in m2, the station is too suspicious to be kept.
 #'
-#' @param data data.table object obained from m2
+#' @param data data.table object obtained from m2
 #' @param cutOff value above which data are flagged with FALSE, 0 < cutOff < 1.
 #'   Default is 0.2, i.e., 20 percent of data.
 #'
@@ -192,7 +192,7 @@ m4 <- function(data, cutOff = 0.9){
 #'
 #' This function takes a numerical vector x and fills NaNs with linearly
 #' interpolated values. The allowed length of the gap, i.e., the number of
-#' consecutive NaNs to be interpolated and replaces is smaller or equal
+#' consecutive NaNs to be interpolated and replaced, is smaller or equal
 #' maxLength. Internally called by o1.
 #'
 #' @param x a numeric vector

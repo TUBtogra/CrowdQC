@@ -7,18 +7,18 @@
 m1(data, cutOff = 1)
 }
 \arguments{
-\item{data}{data set formated as the sample data (netatmoBer)}
+\item{data}{data set (a data.table object) formated the same way as the sample data (netatmoBer)}
 
 \item{cutOff}{how much stations are allowed to have the same coordinates,
-default is 1. This means that if two p_ids share the same lat lon values,
+default is 1. This means that if two p_ids share the same lon & lat values,
 data at these stations are set to FALSE.}
 }
 \value{
 data.table
 }
 \description{
-Flag values with FALSE that are missing or belong to a p_id having lon lat
-values which occur more than the 'cutOff' value.
+Flag values with FALSE that are missing or belong to a p_id having lon & lat
+values which occur more often than the 'cutOff' value.
 }
 \examples{
 data(netatmoBer)

@@ -7,7 +7,7 @@
 m3(data, cutOff = 0.2)
 }
 \arguments{
-\item{data}{data.table object obained from m2}
+\item{data}{data.table object obtained from m2}
 
 \item{cutOff}{value above which data are flagged with FALSE, 0 < cutOff < 1.
 Default is 0.2, i.e., 20 percent of data.}

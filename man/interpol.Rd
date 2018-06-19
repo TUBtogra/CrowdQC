@@ -17,7 +17,7 @@ vector
 \description{
 This function takes a numerical vector x and fills NaNs with linearly
 interpolated values. The allowed length of the gap, i.e., the number of
-consecutive NaNs to be interpolated and replaces is smaller or equal
+consecutive NaNs to be interpolated and replaced, is smaller or equal
 maxLength. Internally called by o1.
 }
 \examples{

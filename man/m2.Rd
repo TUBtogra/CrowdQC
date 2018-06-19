@@ -15,7 +15,7 @@ m2(data, low = 0.01, high = 0.95, heightCorrection = T, debug = F)
 
 \item{heightCorrection}{if set to true (default) and the column "z" exists in
 the input data, the temperatures used in calculating the the z-score are
-corrected. The applied formular is t_cor = t - ((0.0065 * (z - mz)) where
+corrected. The applied formula is t_cor = t + ((0.0065 * (z - mz)) where
 mz is the spatial mean at each time step}
 
 \item{debug}{set to true to keep intermediate results}
