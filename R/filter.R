@@ -239,7 +239,13 @@ o1 <- function(data, fun = interpol, ...){
   data[,ta_int := ta]
   data[!m4, "ta_int"] <- NA
   data[,ta_int := fun(ta_int, ...), by = .(p_id)]
-  data[, o1:= (is.na(ta) & !is.na(ta_int)) | m4] #has been interpolated or not
+  is_interpolated = data$ta != data$ta_int
+  #handle NA compare
+  #first NA's are always false
+  is_interpolated[is.na(is_interpolated)] <- FALSE
+  #but if we created a value it has to be interpolated
+  is_interpolated[is.na(data$ta) & !is.na(data$ta_int)] <- TRUE
+  data[, o1:= is_interpolated | m4] #a value ready to use
   return(data)
 }
 
